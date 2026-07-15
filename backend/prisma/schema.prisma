@@ -11,3 +11,122 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ==========================================
+// ÉNUMÉRATIONS
+// ==========================================
+
+enum Role {
+  ETUDIANT
+  FORMATEUR
+  ADMIN
+}
+
+enum NiveauCours {
+  DEBUTANT
+  INTERMEDIAIRE
+  AVANCE
+}
+
+enum StatutInscription {
+  EN_COURS
+  TERMINEE
+  ABANDONNEE
+}
+
+// ==========================================
+// MODÈLES
+// ==========================================
+
+model Utilisateur {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  motDePasse String
+  nom        String
+  role       Role     @default(ETUDIANT)
+  creeLe     DateTime @default(now())
+
+  coursCrees   Cours[]
+  inscriptions Inscription[]
+}
+
+model Cours {
+  id          String      @id @default(uuid())
+  titre       String
+  description String
+  niveauCours NiveauCours @default(DEBUTANT)
+  creeLe      DateTime    @default(now())
+
+  formateurId String
+  formateur   Utilisateur @relation(fields: [formateurId], references: [id], onDelete: SetNull)
+
+  lecons       Lecon[]
+  inscriptions Inscription[]
+  quizs        Quiz[]
+}
+
+model Lecon {
+  id      String   @id @default(uuid())
+  titre   String
+  contenu String   @db.Text
+  ordre   Int
+  creeLe  DateTime @default(now())
+
+  coursId String
+  cours   Cours    @relation(fields: [coursId], references: [id], onDelete: Cascade)
+
+  @@unique([coursId, ordre])
+}
+
+model Inscription {
+  id          String            @id @default(uuid())
+  statut      StatutInscription @default(EN_COURS)
+  progression Float             @default(0.0)
+  inscritLe   DateTime          @default(now())
+
+  etudiantId String
+  etudiant   Utilisateur @relation(fields: [etudiantId], references: [id], onDelete: Cascade)
+  coursId    String
+  cours      Cours       @relation(fields: [coursId], references: [id], onDelete: Cascade)
+
+  scoresQuiz QuizScore[]
+
+  @@unique([etudiantId, coursId])
+}
+
+model Quiz {
+  id     String   @id @default(uuid())
+  titre  String
+  creeLe DateTime @default(now())
+
+  coursId String
+  cours   Cours    @relation(fields: [coursId], references: [id], onDelete: Cascade)
+
+  questions Question[]
+  scoresQuiz QuizScore[]
+}
+
+model Question {
+  id              String   @id @default(uuid())
+  enonce          String   @db.Text
+  reponseCorrecte String
+  reponsesFausses String[]
+  creeLe          DateTime @default(now())
+
+  quizId String
+  quiz   Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model QuizScore {
+  id     String   @id @default(uuid())
+  score  Float    @default(0.0)
+  faitLe DateTime @default(now())
+
+  inscriptionId String
+  inscription   Inscription @relation(fields: [inscriptionId], references: [id], onDelete: Cascade)
+
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([inscriptionId, quizId])
+}
