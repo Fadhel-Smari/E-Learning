@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const pokeapi = axios.create({
+export const quizapi = axios.create({
     baseURL: 'https://opentdb.com/api.php?amount=5&type=multiple',
     timeout: 5000,
 })
