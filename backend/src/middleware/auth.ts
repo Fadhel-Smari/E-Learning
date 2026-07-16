@@ -20,12 +20,12 @@ export function authentifier(req: Request, res: Response, next: NextFunction){
         res.status(401).json({erreur: "Token invalide / expire"})
     }
 }
-// authZ
-export function exigerRole(role: String){
+
+export function exigerRoles(roles: string[]) {
     return (req: Request, res: Response, next: NextFunction) => {
-        if((req as any).user.role !== role){
-            return res.status(403).json({erreur : "access refuse"})
+        if (!roles.includes((req as any).user.role)) {
+            return res.status(403).json({ erreur: "access refuse" });
         }
-        next()
-    }
+        next();
+    };
 }
