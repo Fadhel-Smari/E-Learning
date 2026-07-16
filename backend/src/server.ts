@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import coursRoutes from "./routes/cours.routes.js";
+import inscriptionRoutes from "./routes/inscriptions.routes.js";
+import quizRoutes from "./routes/quiz.routes.js";
 
 
 dotenv.config();
@@ -11,6 +13,9 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/cours", coursRoutes);
+app.use("/inscriptions", inscriptionRoutes);
+app.use("/", quizRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 
