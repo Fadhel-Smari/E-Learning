@@ -33,7 +33,7 @@ async function recupererQuestionsOpenTDB() {
 }
 
 // POST /quiz/generer/:coursId
-router.post("/quiz/generer/:coursId", authentifier, exigerRoles(["FORMATEUR", "ADMIN"]), async (req: Request, res: Response) => {
+router.post("/generer/:coursId", authentifier, exigerRoles(["FORMATEUR", "ADMIN"]), async (req: Request, res: Response) => {
   const coursId = String(req.params.coursId);
   const { titre } = req.body;
   const userId = String((req as any).user.sub);
@@ -94,7 +94,7 @@ router.post("/quiz/generer/:coursId", authentifier, exigerRoles(["FORMATEUR", "A
 
 
 // POST /quiz/:quizId/evaluer
-router.post("/quiz/:quizId/evaluer", authentifier, exigerRoles(["ETUDIANT", "ADMIN"]), async (req: Request, res: Response) => {
+router.post("/:quizId/evaluer", authentifier, exigerRoles(["ETUDIANT", "ADMIN"]), async (req: Request, res: Response) => {
   const quizId = String(req.params.quizId);
   const etudiantId = String((req as any).user.sub);
   const { reponses } = req.body;

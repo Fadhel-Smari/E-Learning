@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/cours", coursRoutes);
 app.use("/inscriptions", inscriptionRoutes);
-app.use("/", quizRoutes);
+app.use("/quiz", quizRoutes);
 
 
 const PORT = process.env.PORT || 3000;
