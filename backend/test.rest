@@ -1,0 +1,308 @@
+### Fichier de tests pour l'API E-Learning
+@baseUrl = http://localhost:3000
+
+# ===================================================================
+# 1. ENREGISTREMENT DES UTILISATEURS (ADMIN, FORMATEUR, ETUDIANT)
+# ===================================================================
+
+### Création du compte de l'ADMIN
+# @name registerAdmin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@elearning.ca",
+  "nom": "Administrateur Système",
+  "motDePasse": "AdminSuperSecu123!",
+  "role": "ADMIN"
+}
+
+###
+
+### Création du compte du FORMATEUR
+# @name registerFormateur
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "formateur@elearning.ca",
+  "nom": "Professeur Richard",
+  "motDePasse": "ProfPasse987!",
+  "role": "FORMATEUR"
+}
+
+###
+
+### Création du compte de l'ÉTUDIANT
+# @name registerEtudiant
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "etudiant@elearning.ca",
+  "nom": "Jean Tremblay",
+  "motDePasse": "EtuPasse456!",
+  "role": "ETUDIANT"
+}
+
+###
+
+# ===================================================================
+# 2. CONNEXION & AUTHENTIFICATION (GÉNÉRATION DES TOKENS)
+# ===================================================================
+
+### Connexion de l'ADMIN
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@elearning.ca",
+  "motDePasse": "AdminSuperSecu123!"
+}
+
+### On extrait le token Admin
+@tokenAdmin = {{loginAdmin.response.body.token}}
+
+###
+
+### Connexion du FORMATEUR
+# @name loginFormateur
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "formateur@elearning.ca",
+  "motDePasse": "ProfPasse987!"
+}
+
+### On extrait le token Formateur
+@tokenFormateur = {{loginFormateur.response.body.token}}
+
+###
+
+### Connexion de l'ÉTUDIANT
+# @name loginEtudiant
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "etudiant@elearning.ca",
+  "motDePasse": "EtuPasse456!"
+}
+
+### On extrait le token Étudiant
+@tokenEtudiant = {{loginEtudiant.response.body.token}}
+
+###
+
+# ===================================================================
+# 3. PROFIL DE L'UTILISATEUR CONNECTÉ (/auth/me)
+# ===================================================================
+
+### Consulter son propre profil (Exemple: Étudiant)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{tokenEtudiant}}
+
+###
+
+# ===================================================================
+# 4. GESTION DES COURS & LEÇONS
+# ===================================================================
+
+### Création d'un cours par le FORMATEUR
+# @name creerCours
+POST {{baseUrl}}/cours
+Authorization: Bearer {{tokenFormateur}}
+Content-Type: application/json
+
+{
+  "titre": "Introduction à NestJS",
+  "description": "Apprendre à structurer des applications d'envergure avec NestJS.",
+  "niveauCours": "INTERMEDIAIRE"
+}
+
+### On extrait l'ID du cours créé
+@coursId = {{creerCours.response.body.id}}
+
+###
+
+### Liste des cours (Filtres optionnels et pagination)
+GET {{baseUrl}}/cours?recherche=NestJS&page=1&limit=5
+
+###
+
+### Ajout d'une leçon au cours par le FORMATEUR (Ordre 1)
+# @name creerLecon1
+POST {{baseUrl}}/cours/{{coursId}}/lecons
+Authorization: Bearer {{tokenFormateur}}
+Content-Type: application/json
+
+{
+  "titre": "1. Configuration de l'environnement",
+  "contenu": "Installer la CLI NestJS et créer un projet avec 'nest new'.",
+  "ordre": 1
+}
+
+###
+
+### Ajout d'une leçon au cours par le FORMATEUR (Ordre 2)
+# @name creerLecon2
+POST {{baseUrl}}/cours/{{coursId}}/lecons
+Authorization: Bearer {{tokenFormateur}}
+Content-Type: application/json
+
+{
+  "titre": "2. Les Modules et les Contrôleurs",
+  "contenu": "Comprendre l'injection de dépendances.",
+  "ordre": 2
+}
+
+### On extrait l'id de la deuxième leçon pour tester la suppression plus tard
+@lecon2Id = {{creerLecon2.response.body.id}}
+
+###
+
+### ÉTUDIANT tente d'accéder au cours complet sans inscription -> S'attend à recevoir 403
+GET {{baseUrl}}/cours/{{coursId}}
+Authorization: Bearer {{tokenEtudiant}}
+
+###
+
+# ===================================================================
+# 5. INSCRIPTIONS & PROGRESSION
+# ===================================================================
+
+### Inscription de l'ÉTUDIANT au cours créé
+# @name inscrireEtudiant
+POST {{baseUrl}}/inscriptions
+Authorization: Bearer {{tokenEtudiant}}
+Content-Type: application/json
+
+{
+  "coursId": "{{coursId}}"
+}
+
+### On extrait l'ID de l'inscription
+@inscriptionId = {{inscrireEtudiant.response.body.id}}
+
+###
+
+### ÉTUDIANT consulte la liste de ses inscriptions
+GET {{baseUrl}}/inscriptions
+Authorization: Bearer {{tokenEtudiant}}
+
+###
+
+### ÉTUDIANT accède maintenant au cours en détail (Autorisé car inscrit)
+GET {{baseUrl}}/cours/{{coursId}}
+Authorization: Bearer {{tokenEtudiant}}
+
+###
+
+### ADMIN met à jour progression
+PATCH {{baseUrl}}/inscriptions/{{inscriptionId}}
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "progression": 50.0,
+  "statut": "EN_COURS"
+}
+
+###
+
+# ===================================================================
+# 6. GÉNÉRATION ET ÉVALUATION DE QUIZ
+# ===================================================================
+
+### Génération automatique d'un Quiz par le FORMATEUR via l'API OpenTDB
+# @name genererQuiz
+POST {{baseUrl}}/quiz/generer/{{coursId}}
+Authorization: Bearer {{tokenFormateur}}
+Content-Type: application/json
+
+{
+  "titre": "Quiz de révision Express"
+}
+
+###
+
+# Extraction dynamique de l'ID du Quiz généré
+@quizId = {{genererQuiz.response.body.quiz.id}}
+
+# Récupération automatique des IDs des questions retournées par la base de données
+@q1Id = {{genererQuiz.response.body.quiz.questions[0].id}}
+@q2Id = {{genererQuiz.response.body.quiz.questions[1].id}}
+@q3Id = {{genererQuiz.response.body.quiz.questions[2].id}}
+@q4Id = {{genererQuiz.response.body.quiz.questions[3].id}}
+@q5Id = {{genererQuiz.response.body.quiz.questions[4].id}}
+
+# Récupération automatique des bonnes réponses pour soumettre un test
+@q1Correcte = {{genererQuiz.response.body.quiz.questions[0].reponseCorrecte}}
+@q2Correcte = {{genererQuiz.response.body.quiz.questions[1].reponseCorrecte}}
+@q3Correcte = {{genererQuiz.response.body.quiz.questions[2].reponseCorrecte}}
+@q4Correcte = {{genererQuiz.response.body.quiz.questions[3].reponseCorrecte}}
+@q5Correcte = {{genererQuiz.response.body.quiz.questions[4].reponseCorrecte}}
+
+# Récupération d'une mauvaise réponse pour la question 5 (en piochant dans le tableau des réponses fausses)
+@q5Fausse = {{genererQuiz.response.body.quiz.questions[4].reponsesFausses[0]}}
+
+###
+
+### Évaluation du quiz par l'ÉTUDIANT (Score visé : 80% - 4 bonnes réponses, 1 mauvaise)
+POST {{baseUrl}}/quiz/{{quizId}}/evaluer
+Authorization: Bearer {{tokenEtudiant}}
+Content-Type: application/json
+
+{
+  "reponses": [
+    {
+      "questionId": "{{q1Id}}",
+      "choix": "{{q1Correcte}}"
+    },
+    {
+      "questionId": "{{q2Id}}",
+      "choix": "{{q2Correcte}}"
+    },
+    {
+      "questionId": "{{q3Id}}",
+      "choix": "{{q3Correcte}}"
+    },
+    {
+      "questionId": "{{q4Id}}",
+      "choix": "{{q4Correcte}}"
+    },
+    {
+      "questionId": "{{q5Id}}",
+      "choix": "{{q5Fausse}}"
+    }
+  ]
+}
+
+###
+
+# ===================================================================
+# 7. ROUTE DES MODIFICATIONS ET ACTIONS ADMIN / SUPPRESSIONS
+# ===================================================================
+
+### ADMIN modifie partiellement un cours
+PATCH {{baseUrl}}/cours/{{coursId}}
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "description": "Description mise à jour par l'administrateur du système."
+}
+
+###
+
+### ADMIN supprime la leçon d'ordre 2
+DELETE {{baseUrl}}/cours/lecons/{{lecon2Id}}
+Authorization: Bearer {{tokenAdmin}}
+
+###
+
+### ADMIN supprime le cours (avec suppression en cascade des quizs et leçons restantes)
+DELETE {{baseUrl}}/cours/{{coursId}}
+Authorization: Bearer {{tokenAdmin}}
