@@ -19,6 +19,10 @@ body {
   margin: 0 auto;
 }
 
+/* ==========================================
+   Composant
+   ========================================== */
+
 /* === BARRE DE NAVIGATION === */
 .en-tete-navigation {
   background-color: #ffffff;
@@ -77,6 +81,15 @@ body {
   background-color: #fee2e2;
   border-color: #fca5a5;
   color: #ef4444;
+}
+
+/* === Affichage Erreur === */
+.error-box {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.8rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
 }
 
 /* === Autre === */
