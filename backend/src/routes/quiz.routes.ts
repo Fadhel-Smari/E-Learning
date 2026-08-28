@@ -32,6 +32,28 @@ async function recupererQuestionsOpenTDB() {
   }
 }
 
+// GET /quiz/:quizId
+router.get("/:quizId", authentifier, async (req: Request, res: Response) => {
+  const quizId = String(req.params.quizId);
+
+  try {
+    const quiz = await prisma.quiz.findUnique({
+      where: { id: quizId },
+      include: {
+        questions: true
+      }
+    });
+
+    if (!quiz) {
+      return res.status(404).json({ erreur: "Quiz introuvable !" });
+    }
+
+    res.json(quiz);
+  } catch (error) {
+    res.status(500).json({ erreur: "Erreur lors de la récupération du quiz !" });
+  }
+});
+
 // POST /quiz/generer/:coursId
 router.post("/generer/:coursId", authentifier, exigerRoles(["FORMATEUR", "ADMIN"]), async (req: Request, res: Response) => {
   const coursId = String(req.params.coursId);
