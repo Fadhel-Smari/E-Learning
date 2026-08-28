@@ -33,3 +33,8 @@ export async function ajouterLecon(coursId: string, lecon: { titre: string; cont
 export async function supprimerLecon(leconId: string): Promise<void> {
   await api.delete(`/cours/lecons/${leconId}`);
 }
+
+export async function getMesCoursFormateur(): Promise<Cours[]> {
+  const { data } = await api.get('/cours/mes-cours');
+  return data;
+}
