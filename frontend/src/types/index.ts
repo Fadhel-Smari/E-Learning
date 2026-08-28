@@ -83,3 +83,13 @@ export type Cours = {
     inscriptions: number;
   }
 };
+
+export type ReponseSoumise = {
+  questionId: string;
+  choix: string;
+};
+
+export type ResultatEvaluation = {
+  score: number;
+  details?: any;
+};
