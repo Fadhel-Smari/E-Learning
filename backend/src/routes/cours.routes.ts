@@ -31,6 +31,22 @@ router.get("/", async (req: Request, res: Response) => {
   res.json({ page, limit, total, cours });
 });
 
+// GET /cours/mes-cours (Uniquement pour le FORMATEUR connecté)
+router.get("/mes-cours", authentifier, exigerRoles(["FORMATEUR"]), async (req: Request, res: Response) => {
+  const formateurId = String((req as any).user.sub);
+
+  const mesCours = await prisma.cours.findMany({
+    where: { formateurId },
+    include: {
+      lecons: true,
+      _count: { select: { inscriptions: true } }
+    },
+    orderBy: { creeLe: "desc" }
+  });
+
+  res.json(mesCours);
+});
+
 // GET /cours/:id
 router.get("/:id", authentifier, async (req: Request, res: Response) => {
   const id = String(req.params.id);
