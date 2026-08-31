@@ -23,6 +23,7 @@ export function Navbar() {
           ) : (
             <>
               <Link to="/connexion">Connexion</Link>
+              <Link to="/CreationCompte">Inscription</Link>
             </>
           )}
         </div>

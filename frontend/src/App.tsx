@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Accueil } from './pages/Accueil';
 import { Connexion } from './pages/Connexion';
+import { CreationCompte } from './pages/CreationCompte';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -20,8 +21,8 @@ export function App() {
           <Routes>
             {/* Routes Publiques */}
             <Route path="/" element={<Accueil />} />
-            <Route path="/connexion" element={<Connexion />} />
-
+            <Route path="/Connexion" element={<Connexion />} />
+            <Route path="/CreationCompte" element={<CreationCompte />} />
             {/* Routes Privées */}
 
 

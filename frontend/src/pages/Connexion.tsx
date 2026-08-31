@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 export function Connexion() {
+    const navigate = useNavigate();
     const { seConnecter } = useAuth();
 
     const [email, setEmail] = useState("");
@@ -23,7 +25,7 @@ export function Connexion() {
         try {
             const response = await loginUser({ email, motDePasse }) as any;
             await seConnecter(response.token);
-            window.location.href = '/Accueil';
+            navigate('/Accueil');
         } catch (err) {
             console.error("Erreur de connexion", err);
             setMessageErreur("Courriel ou mot de passe invalide.");
@@ -79,6 +81,12 @@ return (
             Se connecter
           </button>
         </form>
+        <div className="auth-pied-page">
+          Vous avez déjà un compte ?{' '}
+          <Link to="/CreationCompte" className="auth-lien">
+            Inscrivez-vous
+          </Link>
+        </div>
       </div>
     </div>
   );
