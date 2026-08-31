@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.routes.js";
 import coursRoutes from "./routes/cours.routes.js";
 import inscriptionRoutes from "./routes/inscriptions.routes.js";
 import quizRoutes from "./routes/quiz.routes.js";
+import cors from 'cors';
 
 
 dotenv.config();
@@ -11,6 +12,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/cours", coursRoutes);
 app.use("/inscriptions", inscriptionRoutes);
