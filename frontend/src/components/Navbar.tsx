@@ -16,6 +16,7 @@ export function Navbar() {
           {token ? (
             <>
               {/* <Link to="/cours">Mes Cours</Link> */}
+              <Link to ="/TableauBord">Tableau de bord</Link>
               <button onClick={seDeconnecter} className="bouton-lien">
                 Déconnexion
               </button>

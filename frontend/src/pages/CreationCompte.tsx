@@ -32,7 +32,7 @@ export function CreationCompte() {
   };
 
   return (
-    <div className="page-conteneur">
+    <div className="page-auth-conteneur">
       <div className="auth-container">
         <div className="auth-header">
           <h2>Créer un compte</h2>

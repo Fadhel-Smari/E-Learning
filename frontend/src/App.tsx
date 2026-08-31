@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Accueil } from './pages/Accueil';
 import { Connexion } from './pages/Connexion';
 import { CreationCompte } from './pages/CreationCompte';
+import { TableauBord } from './pages/TableauBord';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -24,8 +25,14 @@ export function App() {
             <Route path="/Connexion" element={<Connexion />} />
             <Route path="/CreationCompte" element={<CreationCompte />} />
             {/* Routes Privées */}
-
-
+            <Route
+              path="/TableauBord"
+              element={
+                <RoutePrivee>
+                  <TableauBord />
+                </RoutePrivee>
+              }
+            />
             {/* Redirection si la route n'existe pas (Erreur 404) */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

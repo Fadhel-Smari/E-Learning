@@ -25,7 +25,7 @@ export function Connexion() {
         try {
             const response = await loginUser({ email, motDePasse }) as any;
             await seConnecter(response.token);
-            navigate('/Accueil');
+            navigate('/TableauBord');
         } catch (err) {
             console.error("Erreur de connexion", err);
             setMessageErreur("Courriel ou mot de passe invalide.");
@@ -33,7 +33,7 @@ export function Connexion() {
     }
 
 return (
-    <div className="page-conteneur">
+    <div className="page-auth-conteneur">
       <div className="auth-container">
         <div className="auth-header">
           <h2>Connexion</h2>
