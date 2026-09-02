@@ -5,6 +5,8 @@ import { Accueil } from './pages/Accueil';
 import { Connexion } from './pages/Connexion';
 import { CreationCompte } from './pages/CreationCompte';
 import { TableauBord } from './pages/TableauBord';
+import { CreerCours } from './pages/CreerCours';
+import { Cours } from './pages/Cours';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -30,6 +32,22 @@ export function App() {
               element={
                 <RoutePrivee>
                   <TableauBord />
+                </RoutePrivee>
+              }
+            />
+            <Route
+              path="/cours/creer"
+              element={
+                <RoutePrivee>
+                  <CreerCours />
+                </RoutePrivee>
+              }
+            />
+            <Route
+              path="/cours/:id"
+              element={
+                <RoutePrivee>
+                  <Cours />
                 </RoutePrivee>
               }
             />
