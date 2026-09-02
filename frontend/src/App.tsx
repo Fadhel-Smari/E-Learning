@@ -44,6 +44,14 @@ export function App() {
               }
             />
             <Route
+              path="/cours/editer/:id"
+              element={
+                <RoutePrivee>
+                  <CreerCours />
+                </RoutePrivee>
+              }
+            />
+            <Route
               path="/cours/:id"
               element={
                 <RoutePrivee>

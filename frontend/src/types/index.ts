@@ -93,3 +93,11 @@ export type ResultatEvaluation = {
   score: number;
   details?: any;
 };
+
+export type FormulaireLecon = {
+    coursId: string;
+    prochainOrdre: number;
+    leconExistante?: Lecon | null;
+    onSuccess: () => void;
+    onAnnuler: () => void;
+};

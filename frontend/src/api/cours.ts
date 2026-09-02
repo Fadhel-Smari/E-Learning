@@ -17,7 +17,7 @@ export async function creerCours(cours: { titre: string; description: string; ni
 }
 
 export async function modifierCours(id: string, cours: { titre?: string; description?: string; niveauCours?: NiveauCours }): Promise<Cours> {
-  const { data } = await api.put(`/cours/${id}`, cours);
+  const { data } = await api.patch(`/cours/${id}`, cours);
   return data;
 }
 
@@ -36,5 +36,15 @@ export async function supprimerLecon(leconId: string): Promise<void> {
 
 export async function getMesCoursFormateur(): Promise<Cours[]> {
   const { data } = await api.get('/cours/mes-cours');
+  return data;
+}
+
+export async function getLeconParId(leconId: string): Promise<Lecon> {
+  const { data } = await api.get(`/cours/lecons/${leconId}`);
+  return data;
+}
+
+export async function modifierLecon(leconId: string, lecon: { titre?: string; contenu?: string; ordre?: number }): Promise<Lecon> {
+  const { data } = await api.patch(`/cours/lecons/${leconId}`, lecon);
   return data;
 }

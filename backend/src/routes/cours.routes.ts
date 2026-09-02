@@ -202,4 +202,66 @@ router.delete("/lecons/:leconId", authentifier, exigerRoles(["FORMATEUR", "ADMIN
   }
 });
 
+// GET /cours/lecons/:leconId
+router.get("/lecons/:leconId", authentifier, async (req: Request, res: Response) => {
+  const leconId = String(req.params.leconId);
+  const userId = String((req as any).user.sub);
+  const userRole = (req as any).user.role;
+
+  const lecon = await prisma.lecon.findUnique({ 
+    where: { id: leconId },
+    include: { cours: true }
+  });
+
+  if (!lecon) return res.status(404).json({ erreur: "Lecon introuvable!" });
+
+  let accesAutorise = false;
+
+  if (userRole === "ADMIN") {
+    accesAutorise = true;
+  } else if (userRole === "FORMATEUR") {
+    if (lecon.cours.formateurId === userId) accesAutorise = true;
+  } else if (userRole === "ETUDIANT") {
+    const inscription = await prisma.inscription.findUnique({
+      where: { etudiantId_coursId: { etudiantId: userId, coursId: lecon.coursId } }
+    });
+    if (inscription) accesAutorise = true;
+  }
+
+  if (!accesAutorise) {
+    return res.status(403).json({ erreur: "Vous n'êtes pas autorisé à voir cette lecon." });
+  }
+
+  res.json(lecon);
+});
+
+// PATCH /cours/lecons/:leconId
+router.patch("/lecons/:leconId", authentifier, exigerRoles(["FORMATEUR", "ADMIN"]), async (req: Request, res: Response) => {
+  const leconId = String(req.params.leconId);
+  const userId = String((req as any).user.sub);
+  const userRole = (req as any).user.role;
+  const { titre, contenu, ordre } = req.body;
+
+  const leconExistante = await prisma.lecon.findUnique({ where: { id: leconId }, include: { cours: true } });
+  if (!leconExistante) return res.status(404).json({ erreur: "Lecon introuvable !" });
+
+  if (leconExistante.cours.formateurId !== userId && userRole !== "ADMIN") {
+    return res.status(403).json({ erreur: "Vous n'êtes pas l'auteur de ce cours." });
+  }
+
+  try {
+    const leconMiseAJour = await prisma.lecon.update({
+      where: { id: leconId },
+      data: {
+        ...(titre !== undefined && { titre: String(titre) }),
+        ...(contenu !== undefined && { contenu: String(contenu) }),
+        ...(ordre !== undefined && { ordre: Number(ordre) }),
+      },
+    });
+    res.json(leconMiseAJour);
+  } catch (error) {
+    res.status(400).json({ erreur: "Une lecon avec cet ordre existe déjà." });
+  }
+});
+
 export default router;
