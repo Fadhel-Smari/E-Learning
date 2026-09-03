@@ -81,7 +81,7 @@ export function TableauBord() {
                                     </div>
                                     <div className="carte-corps" onClick={() => navigate(`/cours/${e.coursId}`)}>
                                         <p className="description-item-cours">
-                                            Inscrit le {e.inscritLe}
+                                            Inscrit le {e.inscritLe && new Date(e.inscritLe).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
@@ -123,6 +123,13 @@ export function TableauBord() {
                                             <span className="texte-discret" style={{ fontSize: '0.9rem' }}>
                                                 {c.lecons?.length || 0} lecons - {c._count?.inscriptions || 0} étudiants
                                             </span>
+                                            <button
+                                                className="bouton-primaire"
+                                                style={{ padding: '0.5rem 1rem', marginTop: 0 }}
+                                                onClick={() => navigate(`/cours/editer/${c.id}`)}
+                                            >
+                                                Modifier
+                                            </button>
                                             <button 
                                                 className="bouton-danger" 
                                                 onClick={() => SupprimerLeCours(c.id)}
