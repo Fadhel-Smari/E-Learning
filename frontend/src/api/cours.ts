@@ -1,7 +1,7 @@
 import { api } from './axios';
 import type { Cours, Lecon, NiveauCours } from '../types';
 
-export async function getTousLesCours(params?: { recherche?: string; niveau?: string; page?: number }): Promise<{ cours: Cours[]; total: number }> {
+export async function getTousLesCours(params?: { recherche?: string; niveau?: string; page?: number }): Promise<{ page: number; limit: number; total: number; cours: Cours[] }> {
   const { data } = await api.get('/cours', { params });
   return data;
 }

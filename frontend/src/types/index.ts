@@ -79,6 +79,8 @@ export type Cours = {
   lecons?: Lecon[];
   quizs?: Quiz[];
   estInscrit?: boolean;
+  inscription?: Inscription | null;
+  inscriptions?: { statut: StatutInscription }[];
   _count?: {
     inscriptions: number;
   }

@@ -58,6 +58,7 @@ router.get("/:id", authentifier, async (req: Request, res: Response) => {
   if (!coursDeBase) return res.status(404).json({ erreur: "Cours introuvable !" });
 
   let accesAutorise = false;
+  let inscriptionExiste = null;
 
   if (userRole === "ADMIN") {
     accesAutorise = true;
@@ -66,10 +67,10 @@ router.get("/:id", authentifier, async (req: Request, res: Response) => {
     if (coursDeBase.formateurId === userId) accesAutorise = true;
 
   } else if (userRole === "ETUDIANT") {
-    const inscriptionExiste = await prisma.inscription.findUnique({
+    inscriptionExiste = await prisma.inscription.findUnique({
       where: { etudiantId_coursId: { etudiantId: userId, coursId: id }}
     });
-    if (inscriptionExiste) { accesAutorise = true; }
+    if (inscriptionExiste) accesAutorise = true;
   }
 
   if (!accesAutorise) {
@@ -81,11 +82,15 @@ router.get("/:id", authentifier, async (req: Request, res: Response) => {
     include: {
       formateur: { select: { id: true, nom: true } },
       lecons: { orderBy: { ordre: "asc" } },
-      quizs: true
+      quizs: true,
+      ...(userRole !== "ETUDIANT" && {
+        inscriptions: { select: { statut: true } },
+        _count: { select: { inscriptions: true } }
+      })
     },
   });
 
-  res.json(coursComplet);
+  res.json({ ...coursComplet, inscription: inscriptionExiste });
 });
 
 // POST /cours

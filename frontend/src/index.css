@@ -204,7 +204,7 @@
 }
 
 /* ==========================================
-   Tableau de bord et Cours
+   Tableau de bord et creation de Cours
    ========================================== */
 
 .carte-cours {
@@ -315,4 +315,89 @@
 .bouton-annuler:hover {
   background-color: #f3f4f6;
   border-color: #9ca3af;
+}
+
+/* ==========================================
+   Cours
+   ========================================== */
+
+.stats-grille {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0 0 0;
+}
+
+.stat-carte {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-valeur {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stat-etiquette {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.lecon-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.lecon-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  background-color: #f9fafb;
+}
+
+.lecon-entete:hover {
+  background-color: #f3f4f6;
+}
+
+.lecon-complete {
+  color: #059669;
+  font-weight: 700;
+}
+
+.lecon-contenu {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.lecon-verrouillee .lecon-entete {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.lecon-cadenas {
+  color: #9ca3af;
+}
+
+.etat-vide {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.pagination-controles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }

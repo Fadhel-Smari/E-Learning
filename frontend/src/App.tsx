@@ -7,6 +7,7 @@ import { CreationCompte } from './pages/CreationCompte';
 import { TableauBord } from './pages/TableauBord';
 import { CreerCours } from './pages/CreerCours';
 import { Cours } from './pages/Cours';
+import { ListerCours } from './pages/ListerCours';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -26,6 +27,7 @@ export function App() {
             <Route path="/" element={<Accueil />} />
             <Route path="/Connexion" element={<Connexion />} />
             <Route path="/CreationCompte" element={<CreationCompte />} />
+            <Route path="/cours" element={<ListerCours />} />
             {/* Routes Privées */}
             <Route
               path="/TableauBord"
