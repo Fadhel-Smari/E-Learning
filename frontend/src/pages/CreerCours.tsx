@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { creerCours, modifierCours, getCoursParId, supprimerLecon } from '../api/cours';
+import { supprimerQuiz } from '../api/quiz';
 import { IndicateurChargement } from '../components/IndicateurChargement';
 import { FormulaireLecon } from '../components/FormulaireLecon';
-import type { NiveauCours, Lecon } from '../types';
+import { FormulaireQuiz } from '../components/FormulaireQuiz';
+import type { NiveauCours, Lecon, Quiz } from '../types';
 
 export function CreerCours() {
     const navigate = useNavigate();
@@ -14,11 +16,13 @@ export function CreerCours() {
     const [description, setDescription] = useState('');
     const [niveauCours, setNiveauCours] = useState<NiveauCours>('DEBUTANT');
     const [lecons, setLecons] = useState<Lecon[]>([]);
+    const [quizs, setQuizs] = useState<Quiz[]>([]);
 
     const [chargement, setChargement] = useState(false);
     const [erreur, setErreur] = useState('');
     const [afficherFormLecon, setAfficherFormLecon] = useState(false);
     const [leconEnEdition, setLeconEnEdition] = useState<Lecon | null>(null);
+    const [afficherFormQuiz, setAfficherFormQuiz] = useState(false);
 
     const chargerCours = async (idCours: string) => {
         setChargement(true);
@@ -29,6 +33,7 @@ export function CreerCours() {
             setDescription(data.description);
             setNiveauCours(data.niveauCours);
             if (data.lecons) setLecons(data.lecons);
+            if (data.quizs) setQuizs(data.quizs);
         } catch (err) {
             setErreur("Impossible de charger le cours.");
         } finally {
@@ -74,7 +79,10 @@ export function CreerCours() {
         setAfficherFormLecon(true);
     };
 
-    const GenererQuiz = () => {
+    const GenererQuiz = async () => {
+        setErreur('');
+        const idValide = await courExistant();
+        if (idValide) setAfficherFormQuiz(true);
     };
 
     const supprimerUneLecon = async (leconId: string) => {
@@ -84,6 +92,16 @@ export function CreerCours() {
             if (coursId) chargerCours(coursId);
         } catch (err) {
             setErreur("Erreur lors de la suppression de la lecon.");
+        }
+    };
+
+    const supprimerUnQuiz = async (quizId: string) => {
+        setErreur('');
+        try {
+            await supprimerQuiz(quizId);
+            if (coursId) chargerCours(coursId);
+        } catch (err) {
+            setErreur("Erreur lors de la suppression du quiz.");
         }
     };
 
@@ -163,7 +181,7 @@ export function CreerCours() {
                         {lecons.length > 0 && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
                                 {lecons.map(l => (
-                                    <div key={l.id} className="champ-saisie" style={{ backgroundColor: '#f3f5f7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div key={l.id} className="champ-saisie ligne-item-cours">
                                         <span><strong>Lecon {l.ordre} :</strong> {l.titre}</span>
                                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                                             <button
@@ -198,6 +216,26 @@ export function CreerCours() {
                         </div>
                     </div>
 
+                    {quizs.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
+                            {quizs.map(q => (
+                                <div key={q.id} className="champ-saisie ligne-item-cours">
+                                    <span><strong>Quiz :</strong> {q.titre}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <button
+                                            type="button"
+                                            className="bouton-danger"
+                                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}
+                                            onClick={() => supprimerUnQuiz(q.id)}
+                                        >
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     {afficherFormLecon && coursId && (
                         <div style={{ marginTop: '1rem' }}>
                             <FormulaireLecon
@@ -213,6 +251,19 @@ export function CreerCours() {
                                     setAfficherFormLecon(false);
                                     setLeconEnEdition(null);
                                 }}
+                            />
+                        </div>
+                    )}
+
+                    {afficherFormQuiz && coursId && (
+                        <div style={{ marginTop: '1rem' }}>
+                            <FormulaireQuiz
+                                coursId={coursId}
+                                onSuccess={() => {
+                                    setAfficherFormQuiz(false);
+                                    chargerCours(coursId);
+                                }}
+                                onAnnuler={() => setAfficherFormQuiz(false)}
                             />
                         </div>
                     )}

@@ -103,3 +103,9 @@ export type FormulaireLecon = {
     onSuccess: () => void;
     onAnnuler: () => void;
 };
+
+export type FormulaireQuiz = {
+    coursId: string;
+    onSuccess: () => void;
+    onAnnuler: () => void;
+};

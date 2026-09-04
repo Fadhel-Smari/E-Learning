@@ -401,3 +401,10 @@
   gap: 1rem;
   margin-top: 2rem;
 }
+
+.ligne-item-cours {
+  background-color: #f3f5f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
