@@ -8,13 +8,13 @@ import prisma from "../../utils/prisma.js"
 const router = Router()
 
 router.post("/register", async(req: Request, res: Response)=>{
-    const { email, nom, motDePasse, role } = req.body
+    const { email, nom, motDePasse } = req.body
     if(!email || !nom || !motDePasse){
         return res.status(400).json({erreur:"email, nom et mot de passe requis!"})
     }
     try{
         const hash = await bcrypt.hash(motDePasse,10)
-        const user = await prisma.utilisateur.create({ data: { email, nom, motDePasse: hash, role }})
+        const user = await prisma.utilisateur.create({ data: { email, nom, motDePasse: hash, role: "ETUDIANT" }})
         res.status(201).json({id: user.id, email: user.email, nom: user.nom, role: user.role, creeLe: user.creeLe})
     }catch{
         res.status(400).json({ erreur: "Les informations soumises ne sont pas valides" })
