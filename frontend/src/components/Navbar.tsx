@@ -9,7 +9,9 @@ export function Navbar() {
     <header className="en-tete-navigation">
       <nav>
         {/* À Gauche */}
-        <Link to="/" className="accueil-lien">Mon E-Learning</Link>
+        <Link to="/" className="accueil-lien">
+          <span>🎓</span> Mon E-Learning
+        </Link>
         
         {/* À Droite */}
         <div className="nav-groupe-liens">

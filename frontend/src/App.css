@@ -60,9 +60,32 @@ body {
 }
 
 .accueil-lien {
-  font-weight: 700 !important;
-  font-size: 1.2rem !important;
-  color: #1f2937 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  text-decoration: none;
+  background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.accueil-lien span {
+  font-size: 1.35rem;
+  -webkit-text-fill-color: initial;
+  transition: transform 0.2s ease;
+}
+
+.accueil-lien:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.accueil-lien:hover span {
+  transform: scale(1.15) rotate(-5deg);
 }
 
 .bouton-lien {
