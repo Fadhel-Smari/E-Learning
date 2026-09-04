@@ -46,6 +46,9 @@ export function Cours() {
         ? Math.round((cours.inscription.progression / 100) * totalLecons)
         : 0;
 
+    const leconsRestantes = totalLecons - nbLeconsCompletees;
+    const scoresParQuizId = new Map((cours.inscription?.scoresQuiz ?? []).map(s => [s.quizId, s.score]));
+
     const majProgression = async (nouveauNbComplete: number) => {
         if (!cours?.inscription) return;
         const clamped = Math.max(0, Math.min(totalLecons, nouveauNbComplete));
@@ -62,7 +65,6 @@ export function Cours() {
         }
     };
 
-    const nbEnCours = cours.inscriptions?.filter(i => i.statut === 'EN_COURS').length ?? 0;
     const nbTerminees = cours.inscriptions?.filter(i => i.statut === 'TERMINEE').length ?? 0;
 
     return (
@@ -81,13 +83,27 @@ export function Cours() {
                     ) : (
                         cours.inscription && (
                             <span style={{ fontWeight: 600, color: '#3b82f6' }}>
-                                {Math.round(cours.inscription.progression)}% complété
+                                {Math.round(cours.inscription.progression)}% des leçons complétées
                             </span>
                         )
                     )}
                 </div>
 
-                <p className="description-item-cours" style={{ marginTop: '1rem' }}>{cours.description}</p>
+                <div className="entete-description-cours">
+                    <p className="description-item-cours">{cours.description}</p>
+                    
+                    {!estFormateurOuAdmin && scoresParQuizId.size > 0 && (
+                        
+                        <div className="liste-scores-quiz">
+                            <span className="texte-discret">Résultats quiz</span>
+                            {(cours.quizs ?? []).filter(q => scoresParQuizId.has(q.id)).map(q => (
+                                <span key={q.id} className="badge-score">
+                                    {q.titre} : {Math.round(scoresParQuizId.get(q.id)!)}%
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 {estFormateurOuAdmin && (
                     <div className="stats-grille">
@@ -100,8 +116,8 @@ export function Cours() {
                             <div className="stat-etiquette">Étudiants</div>
                         </div>
                         <div className="stat-carte">
-                            <div className="stat-valeur">{nbEnCours} / {nbTerminees}</div>
-                            <div className="stat-etiquette">En cours / Complété</div>
+                            <div className="stat-valeur">{nbTerminees} / {cours._count?.inscriptions ?? 0}</div>
+                            <div className="stat-etiquette">Complété</div>
                         </div>
                     </div>
                 )}
@@ -127,7 +143,7 @@ export function Cours() {
                                 }}
                             >
                                 <span><strong>Leçon {lecon.ordre} :</strong> {lecon.titre}</span>
-                                {estComplete && <span className="lecon-complete">✅</span>}
+                                {estComplete && <span className="lecon-complete">✓</span>}
                                 {estVerrouillee && <span className="lecon-cadenas">🔒</span>}
                             </div>
 
@@ -158,10 +174,27 @@ export function Cours() {
                     );
                 })}
 
-                {!estFormateurOuAdmin && totalLecons > 0 && nbLeconsCompletees === totalLecons && (cours.quizs?.length ?? 0) > 0 && (
-                    <button className="bouton-quiz" style={{ marginTop: '1rem' }} onClick={() => navigate(`/cours/${cours.id}/quiz`)}>
-                        Commencer le quiz
-                    </button>
+                {!estFormateurOuAdmin && (cours.quizs?.length ?? 0) > 0 && (
+                    <div style={{ marginTop: '1rem' }}>
+                        <div className="liste-boutons-quiz">
+                            {cours.quizs!.map(q => (
+                                <button
+                                    key={q.id}
+                                    className="bouton-quiz"
+                                    style={{ marginTop: 0 }}
+                                    disabled={leconsRestantes > 0}
+                                    onClick={() => navigate(`/quiz/${q.id}`)}
+                                >
+                                    {scoresParQuizId.has(q.id) ? `Refaire le quiz : ${q.titre}` : `Commencer le quiz : ${q.titre}`}
+                                </button>
+                            ))}
+                        </div>
+                        {leconsRestantes > 0 && (
+                            <p className="texte-discret" style={{ marginTop: '0.5rem' }}>
+                                Complétez les leçons restante pour débloquer le quiz.
+                            </p>
+                        )}
+                    </div>
                 )}
             </div>
         </div>

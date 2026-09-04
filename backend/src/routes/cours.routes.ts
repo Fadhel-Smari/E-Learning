@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import prisma from "../../utils/prisma.js"; // Ajustement du chemin vers utils (même niveau que src)
+import prisma from "../../utils/prisma.js";
 import { authentifier, exigerRoles } from "../middleware/auth.js";
 
 const router = Router();
@@ -68,7 +68,8 @@ router.get("/:id", authentifier, async (req: Request, res: Response) => {
 
   } else if (userRole === "ETUDIANT") {
     inscriptionExiste = await prisma.inscription.findUnique({
-      where: { etudiantId_coursId: { etudiantId: userId, coursId: id }}
+      where: { etudiantId_coursId: { etudiantId: userId, coursId: id }},
+      include: { scoresQuiz: true }
     });
     if (inscriptionExiste) accesAutorise = true;
   }

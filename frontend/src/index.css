@@ -408,3 +408,89 @@
   justify-content: space-between;
   align-items: center;
 }
+
+/* ==========================================
+   Quiz
+   ========================================== */
+
+.option-quiz {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.option-quiz:hover {
+  background-color: #f9fafb;
+}
+
+.carte-question-quiz {
+  padding: 1.5rem;
+}
+
+.enonce-question-quiz {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.options-quiz-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.score-resultat {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.score-resultat.reussi {
+  color: #059669;
+}
+
+.score-resultat.echec {
+  color: #b91c1c;
+}
+
+.bouton-quiz:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.bouton-quiz:disabled:hover {
+  background-color: #d1d5db;
+}
+
+.entete-description-cours {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.liste-scores-quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.badge-score {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.liste-boutons-quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

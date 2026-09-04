@@ -8,6 +8,7 @@ import { TableauBord } from './pages/TableauBord';
 import { CreerCours } from './pages/CreerCours';
 import { Cours } from './pages/Cours';
 import { ListerCours } from './pages/ListerCours';
+import { PasserQuiz } from './pages/PasserQuiz';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -58,6 +59,14 @@ export function App() {
               element={
                 <RoutePrivee>
                   <Cours />
+                </RoutePrivee>
+              }
+            />
+            <Route
+              path="/quiz/:quizId"
+              element={
+                <RoutePrivee>
+                  <PasserQuiz />
                 </RoutePrivee>
               }
             />
