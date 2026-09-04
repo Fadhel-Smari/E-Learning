@@ -15,7 +15,7 @@ export function Navbar() {
         <div className="nav-groupe-liens">
           {token ? (
             <>
-              {/* <Link to="/cours">Mes Cours</Link> */}
+              <Link to="/Accueil">Accueil</Link>
               <Link to="/cours">Liste des Cours</Link>
               <Link to ="/TableauBord">Tableau de bord</Link>
               <button onClick={seDeconnecter} className="bouton-lien">
@@ -24,6 +24,7 @@ export function Navbar() {
             </>
           ) : (
             <>
+              <Link to="/Accueil">Accueil</Link>
               <Link to="/cours">Liste des Cours</Link>
               <Link to="/connexion">Connexion</Link>
               <Link to="/CreationCompte">Inscription</Link>
