@@ -1,7 +1,5 @@
 # 🎓 API E-Learning — Plateforme d'Apprentissage en Ligne
 
-# Partie backend
-
 Bienvenue sur l'API de notre plateforme **E-Learning**. Ce service Web permet de gérer des cours en ligne, des leçons structurées, des inscriptions d'étudiants avec suivi de progression, ainsi que la génération automatique de quiz de validation de compétences grâce à l'intégration de l'API externe **OpenTDB** (Open Trivia Database).
 
 ---
@@ -11,6 +9,72 @@ Bienvenue sur l'API de notre plateforme **E-Learning**. Ce service Web permet de
 * **Membre 2** : Gabriel Cadieux
 
 ---
+
+# Partie frontend
+
+## 🚀 Lancement du projet
+
+### 1. Installation des dépendances
+À la racine du frontend du projet, téléchargez les paquets requis :
+```bash
+cd frontend
+npm install
+```
+
+### 2. Fichier de variables d'environnement (.env)
+Créez un fichier nommé .env à la racine du frontend et ajoutez-y l'URL de votre backend (port 3000 par défaut) :
+
+```bash
+VITE_API_URL="http://localhost:3000"
+```
+
+### 3. Démarrage de l'application
+Démarrez le serveur de développement :
+
+```bash
+npm run dev
+```
+
+L'application sera accessible par défaut sur http://localhost:5173.
+
+---
+
+## Authentification & Roles
+
+Le système gère trois types d'utilisateurs avec des permissions différentes :
+
+* **Étudiant** : Peut parcourir les cours, s'y inscrire, suivre les leçons et faire les quiz.
+* **Formateur** : Possède les droits de création, de modification et de suppression sur ses propres cours et leçons.
+* **Administrateur** : A un accès global pour la gestion de la plateforme.
+
+**Comment tester les rôles ?**
+Créez votre compte via /CreationCompte et sélectionnez le role désiré dans le menu déroulant.
+
+## 📋 Liste des pages
+
+```text
+===================================================================
+1. PUBLIQUES
+===================================================================
+/                       -> Accueil
+/Connexion              -> Connexion
+/CreationCompte         -> Création de compte
+/cours                  -> Liste de tous les cours (inscription si étudiant)
+
+===================================================================
+2. PRIVÉES (connexion requise)
+===================================================================
+/TableauBord            -> Tableau de bord
+/cours/:id              -> Détails d'un cours
+/cours/creer            -> Créer un nouveau cours (formateur/admin)
+/cours/editer/:id       -> Éditer un cours existant (formateur/admin)
+/quiz/:quizId           -> Passer un quiz (étudiant)
+===================================================================
+```
+
+---
+
+# Partie backend
 
 ## 🚀 Lancement du projet
 
