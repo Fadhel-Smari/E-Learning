@@ -26,7 +26,8 @@ export function ListerCours() {
         setErreur('');
         try {
             const data = await getTousLesCours({ page });
-            setCoursListe(data.cours);
+            const liste = Array.isArray(data) ? data : (data?.cours || []);
+            setCoursListe(liste);
             setTotal(data.total);
             if (data.limit) setLimit(data.limit);
         } catch (err) {
