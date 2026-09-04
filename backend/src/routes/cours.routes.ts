@@ -23,7 +23,10 @@ router.get("/", async (req: Request, res: Response) => {
 
   const [cours, total] = await Promise.all([
     prisma.cours.findMany({ where, skip: (page - 1) * limit, take: limit,
-      include: { formateur: { select: { id: true, nom: true, email: true } }},
+      include: {
+        formateur: { select: { id: true, nom: true, email: true } },
+        _count: { select: { inscriptions: true } }
+      },
       orderBy: { creeLe: "desc" },
     }),
     prisma.cours.count({ where }),
