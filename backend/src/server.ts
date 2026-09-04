@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.routes.js";
 import coursRoutes from "./routes/cours.routes.js";
 import inscriptionRoutes from "./routes/inscriptions.routes.js";
 import quizRoutes from "./routes/quiz.routes.js";
+import utilisateursRouter from './routes/utilisateurs.routes.js';
 import cors from 'cors';
 
 
@@ -17,6 +18,7 @@ app.use("/auth", authRoutes);
 app.use("/cours", coursRoutes);
 app.use("/inscriptions", inscriptionRoutes);
 app.use("/quiz", quizRoutes);
+app.use('/utilisateurs', utilisateursRouter);
 
 
 const PORT = process.env.PORT || 3000;
