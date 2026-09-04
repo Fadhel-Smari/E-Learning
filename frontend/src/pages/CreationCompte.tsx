@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../api/auth';
-import type { Role } from '../types';
 
 export function CreationCompte() {
   const navigate = useNavigate();
@@ -9,7 +8,6 @@ export function CreationCompte() {
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
-  const [role, setRole] = useState<Role>("ETUDIANT");
   const [messageErreur, setMessageErreur] = useState("");
 
   const handleInscription = async (e: React.SubmitEvent) => {
@@ -22,9 +20,8 @@ export function CreationCompte() {
     }
 
     try {
-      await registerUser({ nom, email, motDePasse, role });
-    
-      navigate('/Connexion');
+      await registerUser({ nom, email, motDePasse });
+      navigate('/connexion');
     } catch (err) {
       console.error("Erreur d'inscription", err);
       setMessageErreur("Impossible de créer le compte.");
@@ -89,22 +86,6 @@ export function CreationCompte() {
               placeholder="••••••••"
               required
             />
-          </div>
-
-          <div className="groupe-champ">
-            <label htmlFor="role" className="etiquette-champ">
-              Je suis un(e) <span className="asterisque-obligatoire">*</span>
-            </label>
-            <select 
-              id="role"
-              className="champ-saisie"
-              value={role}
-              onChange={(e) => setRole(e.target.value as Role)}
-            >
-              <option value="ETUDIANT">Étudiant (Suivre des cours)</option>
-              <option value="FORMATEUR">Formateur (Créer des cours)</option>
-              <option value="ADMIN">Administrateur (Gestion)</option>
-            </select>
           </div>
 
           <button type="submit" className="bouton-primaire">
