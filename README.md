@@ -53,23 +53,29 @@ Créez votre compte via /CreationCompte et sélectionnez le role désiré dans l
 ## 📋 Liste des pages
 
 ```text
-===================================================================
-1. PUBLIQUES
-===================================================================
-/                       -> Accueil
-/Connexion              -> Connexion
-/CreationCompte         -> Création de compte
-/cours                  -> Liste de tous les cours (inscription si étudiant)
+=============================================================================================
 
-===================================================================
+1. PUBLIQUES
+=============================================================================================
+
+/                         -> Accueil
+/Connexion                -> Connexion
+/CreationCompte           -> Création de compte
+/cours                    -> Liste de tous les cours (inscription si étudiant)
+
+=============================================================================================
+
 2. PRIVÉES (connexion requise)
-===================================================================
-/TableauBord            -> Tableau de bord
-/cours/:id              -> Détails d'un cours
-/cours/creer            -> Créer un nouveau cours (formateur/admin)
-/cours/editer/:id       -> Éditer un cours existant (formateur/admin)
-/quiz/:quizId           -> Passer un quiz (étudiant)
-===================================================================
+=============================================================================================
+
+/TableauBord              -> Tableau de bord
+/cours/:id                -> Détails d'un cours
+/cours/creer              -> Créer un nouveau cours (formateur/admin)
+/cours/editer/:id         -> Éditer un cours existant (formateur/admin)
+/quiz/:quizId             -> Passer un quiz (étudiant)
+/utilisateurs/editer/:id  -> Éditer un utilisateur spécifique identifié par son identifiant
+
+=============================================================================================
 ```
 
 ---
