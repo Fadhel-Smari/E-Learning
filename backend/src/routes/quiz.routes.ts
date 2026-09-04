@@ -172,4 +172,21 @@ router.post("/:quizId/evaluer", authentifier, exigerRoles(["ETUDIANT", "ADMIN"])
   }
 });
 
+// DELETE /quiz/:quizId
+router.delete("/:quizId", authentifier, exigerRoles(["FORMATEUR", "ADMIN"]), async (req: Request, res: Response) => {
+  const quizId = String(req.params.quizId);
+  const userId = String((req as any).user.sub);
+  const userRole = (req as any).user.role;
+
+  const quiz = await prisma.quiz.findUnique({ where: { id: quizId }, include: { cours: true } });
+  if (!quiz) return res.status(404).json({ erreur: "Quiz introuvable !" });
+
+  if (quiz.cours.formateurId !== userId && userRole !== "ADMIN") {
+    return res.status(403).json({ erreur: "Action non autorisée pour ce cours !" });
+  }
+
+  await prisma.quiz.delete({ where: { id: quizId } });
+  res.status(204).end();
+});
+
 export default router;
