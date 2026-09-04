@@ -6,6 +6,7 @@ import { AffichageErreur } from '../components/AffichageErreur';
 import { getMesInscriptions } from '../api/inscriptions';
 import { getMesCoursFormateur, supprimerCours } from '../api/cours'; 
 import type { Inscription, Cours } from '../types';
+import { GestionAdmin } from '../components/GestionAdmin';
 
 export function TableauBord() {
     const { user } = useAuth();
@@ -147,6 +148,8 @@ export function TableauBord() {
                     )}
                 </div>
             )}
+            {/* SECTION ADMIN */}
+            {user?.role === 'ADMIN' && <GestionAdmin />}
         </div>
     );
 }
