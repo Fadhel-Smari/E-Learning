@@ -9,6 +9,7 @@ import { CreerCours } from './pages/CreerCours';
 import { Cours } from './pages/Cours';
 import { ListerCours } from './pages/ListerCours';
 import { PasserQuiz } from './pages/PasserQuiz';
+import { EditerUtilisateur } from './pages/EditerUtilisateur';
 
 function RoutePrivee({ children }: { children: React.ReactNode }) {
   const { estConnecte } = useAuth();
@@ -37,6 +38,14 @@ export function App() {
                   <TableauBord />
                 </RoutePrivee>
               }
+            />
+            <Route
+              path="/utilisateurs/editer/:id"
+              element={
+                <RoutePrivee>
+                  <EditerUtilisateur />
+                </RoutePrivee>
+              } 
             />
             <Route
               path="/cours/creer"
