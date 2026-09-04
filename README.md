@@ -138,36 +138,74 @@ npm run dev
 ## 📋 Liste des Routes
 
 ```text
-===================================================================
+==================================================================================================
 1. AUTHENTIFICATION & UTILISATEURS
-===================================================================
+==================================================================================================
 POST   /auth/register          -> Inscription d'un nouvel utilisateur
 POST   /auth/login             -> Connexion (Génère le Token JWT)
 GET    /auth/me                -> Profil de l'utilisateur connecté
+GET    /utilisateurs           -> Liste de tous les utilisateurs (ADMIN)
+GET    /utilisateurs/:id       -> Obtenir les détails d'un utilisateur (ADMIN)
+POST   /utilisateurs           -> Créer un utilisateur (Étudiant, Formateur ou Admin) (ADMIN)
+PUT    /utilisateurs/:id       -> Modifier les informations ou le rôle d'un utilisateur (ADMIN)
+DELETE /utilisateurs/:id       -> Supprimer un utilisateur (ADMIN)
 
-===================================================================
+==================================================================================================
 2. GESTION DES COURS & LEÇONS
-===================================================================
+==================================================================================================
 GET    /cours                  -> Liste des cours (Filtres & Pagination)
-GET    /cours/:id              -> Détails d'un cours avec ses leçons
-POST   /cours                  -> Créer un cours
-PATCH  /cours/:id              -> Modifier un cours
-DELETE /cours/:id              -> Supprimer un cours
-POST   /cours/:id/lecons       -> Créer une leçon pour un cours
-DELETE /cours/lecons/:leconId  -> Supprimer une leçon
+GET    /cours/mes-cours        -> Liste des cours créés par le formateur connecté (FORMATEUR)
+GET    /cours/:id              -> Détails d'un cours avec ses leçons (Accès restreint selon rôle)
+POST   /cours                  -> Créer un cours (FORMATEUR, ADMIN)
+PATCH  /cours/:id              -> Modifier un cours (Auteur ou ADMIN)
+DELETE /cours/:id              -> Supprimer un cours (Auteur ou ADMIN)
+POST   /cours/:id/lecons       -> Créer une leçon pour un cours (Auteur ou ADMIN)
+GET    /cours/lecons/:leconId  -> Détails d'une leçon spécifique (Accès restreint selon rôle)
+PATCH  /cours/lecons/:leconId  -> Modifier une leçon (Auteur ou ADMIN)
+DELETE /cours/lecons/:leconId  -> Supprimer une leçon (Auteur ou ADMIN)
 
-===================================================================
+==================================================================================================
 3. INSCRIPTIONS & SUIVI DE PROGRESSION
-===================================================================
-GET    /inscriptions       -> Voir toutes mes inscriptions
-POST   /inscriptions       -> S'inscrire à un cours (coursId dans body)
-PATCH  /inscriptions/:id   -> Mettre à jour progression ou statut
+==================================================================================================
+GET    /inscriptions           -> Voir toutes mes inscriptions (ETUDIANT)
+POST   /inscriptions           -> S'inscrire à un cours (coursId dans body) (ETUDIANT)
+PATCH  /inscriptions/:id       -> Mettre à jour la progression ou le statut (ETUDIANT)
 
-===================================================================
+==================================================================================================
 4. QUIZ & ÉVALUATIONS DYNAMIQUES
-===================================================================
+==================================================================================================
 GET    /cours/:coursId/quizs   -> Obtenir les quiz d'un cours
-POST   /quiz/generer/:coursId  -> Générer un quiz de 5 questions (OpenTDB)
-POST   /quiz/:quizId/evaluer   -> Évaluer les réponses et enregistrer le score
-===================================================================
+POST   /quiz/generer/:coursId  -> Générer un quiz de 5 questions (OpenTDB) (FORMATEUR, ADMIN)
+POST   /quiz/:quizId/evaluer   -> Évaluer les réponses et enregistrer le score (ETUDIANT)
+==================================================================================================
+```
+
+---
+
+## 🛠️ Correctif de sécurité (Auth & Rôles)
+
+- **Problème corrigé :** La route d'inscription (`POST /auth/register`) acceptait le champ `role` envoyé par le client, permettant à n'importe quel utilisateur de s'inscrire en tant qu'administrateur (`"role": "ADMIN"`).
+- **Solution appliquée :**
+  - **Backend :** Le rôle est désormais forcé à `"ETUDIANT"` lors de la création de l'utilisateur dans `auth.routes.ts`.
+  - **Frontend :** Le sélecteur de rôle a été retiré du formulaire d'inscription (`CreationCompte.tsx`).
+
+---
+
+## 💾 Données de test & Script de Seed
+
+Afin d'initialiser la base de données avec des comptes privilégiés et un jeu de données complet pour les tests, un script d'amorce est disponible (`prisma/seed.ts`).
+
+### Contenu du seed :
+- **1 Administrateur :** `admin@ecole.com` (Mot de passe : `1234`)
+- **4 Formateurs** et **8 Étudiants** (Mot de passe générique : `1234`)
+- **7 Cours** avec leçons associées.
+- **10 Inscriptions de démonstration** (statuts et progressions variés).
+
+### Exécuter le seed :
+
+À partir de la racine du projet :
+
+```bash
+cd backend
+npx prisma db seed.
 ```
